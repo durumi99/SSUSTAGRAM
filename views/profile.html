@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="timeline">
+    <div class="user-name">{{'ID : ' + user.id }}</div>
+    <div>
+      <h2> Date and Time : <span id = "now"></span></h2>
+    </div>
+    <div class="followings half">
+      <h2>팔로잉 수</h2>
+      {% if user.Followings %}
+        {% for following in user.Followings %}
+          <div class="count following-count">{{followingCount}}명</div>            
+          <!--<div>{{following.id}}</div>-->
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="followers half">
+      <h2>팔로워 수</h2>
+      {% if user.Followers %}
+        {% for follower in user.Followers %}
+        <div class="count follower-count">{{followerCount}}명</div>           
+          <!--<div>{{follower.id}}</div>-->
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    document.getElementById("now").innerHTML= new Date();
+  </script>
+{% endblock %}
