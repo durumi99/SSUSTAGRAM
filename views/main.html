@@ -5,12 +5,19 @@
     <div class="timeline">
       <div class="twits">
         <form id="hashtag-form" action="/hashtag">
+          <fieldset>
+            <legend>검색 설정</legend>
           <input type="text" name="hashtag" placeholder="태그 검색">
-          <!--
-          <input type="text" name="writer" placeholder="작성자 검색">
-          <input type="text" name="normal" placeholder="일반 검색">
-          -->
+          
+          <input type="radio" name="search" value="hashtag">
+          <label>해시태그</label>
+          <input type="radio" name="search" value="writer">
+          <label>작성자</label>
+          <input type="radio" name="search" value="normal">
+          <label>텍스트</label> 
+                
           <button class="btn">검색</button>
+        </fieldset>
         </form>
         <!--{% for twit in twits %} -->
           <div class="twit">

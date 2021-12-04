@@ -45,6 +45,7 @@ router.get("/cert", isNotLoggedIn, (req, res) => {
 });
 */
 
+
 router.get("/", async (req, res, next) => {
   try {
     const posts = await Post.findAll({

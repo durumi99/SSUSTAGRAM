@@ -5,7 +5,7 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 const User = require("../models/user");
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
-const path = require('path');
+const path = require("path");
 var appDir = path.dirname(require.main.filename);
 
 const router = express.Router();
@@ -16,9 +16,9 @@ var generateRandom = function (min, max) {
 };
 
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
-  const { email, id, name, password } = req.body;
+  const { email, name, nickid, password } = req.body;
   try {
-    const exUser = await User.findOne({ where: { id } });
+    const exUser = await User.findOne({ where: { nickid } });
     if (exUser) {
       return res.redirect("/join?error=exist");
     }
@@ -71,7 +71,7 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     await User.create({
       email,
       name,
-      id,
+      nickid,
       password: hash,
     });
     return res.redirect("/");

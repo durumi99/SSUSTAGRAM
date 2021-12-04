@@ -7,13 +7,13 @@ module.exports = class User extends Sequelize.Model {
         email: {
           type: Sequelize.STRING(40),
           allowNull: true,
+          unique:true,
         },
-        id: {
-          //type: Sequelize.STRING(40),
-          type: Sequelize.INTEGER,
+        nickid: {
+          type: Sequelize.STRING(40),
+          //type: Sequelize.INTEGER,
           allowNull: false,
           unique: true,
-          primaryKey: true,
         },
         name: {
           type: Sequelize.STRING(15),
@@ -38,16 +38,14 @@ module.exports = class User extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.User.hasMany(db.Post)/*, { foreignKey : 'userid' , sourceKey: 'id'}*/;
+    db.User.hasMany(db.Post);
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",
-      //targetKey: "id",
       as: "Followers",
       through: "Follow",
     });
     db.User.belongsToMany(db.User, {
       foreignKey: "followerId",
-      //targetKey: "id",
       as: "Followings",
       through: "Follow",
     });
