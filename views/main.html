@@ -4,18 +4,16 @@
 {% if user and user.id %}
     <div class="timeline">
       <div class="twits">
-        <form id="hashtag-form" action="/hashtag">
+        <form id="hashtag-form" action="/search">
           <fieldset>
             <legend>검색 설정</legend>
-          <input type="text" name="hashtag" placeholder="태그 검색">
-          
-          <input type="radio" name="search" value="hashtag">
+          <input type="text" name="search" placeholder="검색">          
+          <input type="radio" name="option" value="hashtag">
           <label>해시태그</label>
-          <input type="radio" name="search" value="writer">
+          <input type="radio" name="option" value="writer">
           <label>작성자</label>
-          <input type="radio" name="search" value="normal">
-          <label>텍스트</label> 
-                
+          <input type="radio" name="option" value="text">
+          <label>텍스트</label>                 
           <button class="btn">검색</button>
         </fieldset>
         </form>
@@ -26,7 +24,7 @@
             {% if twit.img %}
               <div class="twit-img"><img src="{{twit.img}}" alt="섬네일"></div>
             {% endif %}
-            <a class="twit-author" href="/" class="btn">{{twit.User.name}}</a> 
+            <a class="twit-author" href="/" class="btn">{{twit.User.nickid}}</a> 
             <div class="twit-author" >{{twit.User.createdAt}}</div>            
             <div class="twit-content">{{twit.content}}</div> 
             {% if twit.User.id == user.id %}

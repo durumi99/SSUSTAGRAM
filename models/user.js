@@ -1,3 +1,4 @@
+const { STRING } = require("sequelize");
 const Sequelize = require("sequelize");
 
 module.exports = class User extends Sequelize.Model {
@@ -23,6 +24,13 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.STRING(100),
           allowNull: true,
         },
+        verify:{
+          type: Sequelize.BOOLEAN,
+          defaultValue:false,
+        },
+        verifystring:{
+          type: Sequelize.STRING(100),
+        }
       },
       {
         sequelize,

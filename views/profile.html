@@ -9,19 +9,19 @@
     <div class="followings half">
       <h2>팔로잉 수</h2>
       {% if user.Followings %}
-        {% for following in user.Followings %}
-          <div class="count following-count">{{followingCount}}명</div>            
-          <!--<div>{{following.id}}</div>-->
-        {% endfor %}
+      <div class="count following-count">{{followingCount}}명</div>            
+        <!-- {% for following in user.Followings %}
+          <div>{{following.id}}</div>
+        {% endfor %} -->
       {% endif %}
     </div>
     <div class="followers half">
       <h2>팔로워 수</h2>
       {% if user.Followers %}
-        {% for follower in user.Followers %}
-        <div class="count follower-count">{{followerCount}}명</div>           
-          <!--<div>{{follower.id}}</div>-->
-        {% endfor %}
+        <div class="count follower-count">{{followerCount}}명</div>
+        <!-- {% for follower in user.Followers %}
+          <div>{{follower.id}}</div>
+        {% endfor %} -->
       {% endif %}
     </div>
   </div>

@@ -7,7 +7,6 @@ const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
 var appDir = path.dirname(require.main.filename);
-
 const router = express.Router();
 
 var generateRandom = function (min, max) {
@@ -17,6 +16,8 @@ var generateRandom = function (min, max) {
 
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   const { email, name, nickid, password } = req.body;
+  const verifystring = Math.random().toString(36).slice(2);
+
   try {
     const exUser = await User.findOne({ where: { nickid } });
     if (exUser) {
@@ -26,12 +27,11 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     if (exUser2) {
       return res.redirect("/join?error=exist");
     }
-    /*
-    let authNum = Math.random().toString().substr(2, 6);
+
     let emailTemplete;
     ejs.renderFile(
       appDir + "/template/authMail.ejs",
-      { authCode: authNum },
+      { authCode: verifystring },
       function (err, data) {
         if (err) {
           console.log(err);
@@ -63,9 +63,9 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
         console.log(error);
       }
       console.log("Finish sending email : " + info.response);
-      res.send(authNum);
+      res.send(verifystring);
       transporter.close();
-    });*/
+    });
 
     const hash = await bcrypt.hash(password, 12);
     await User.create({
@@ -73,6 +73,22 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
       name,
       nickid,
       password: hash,
+      verifystring,
+    });
+    return res.redirect("/cert");
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+router.post("/cert", isNotLoggedIn, (req, res, next) => {
+  const emailcert = req.body.emailcert;
+  try {
+    User.findOne({ where: { verifystring: emailcert } }).then((user) => {
+      if (user) {
+        user.update({ verify: true });
+      }
     });
     return res.redirect("/");
   } catch (error) {
@@ -80,7 +96,6 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     return next(error);
   }
 });
-
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (authError, user, info) => {
     if (authError) {
@@ -89,6 +104,10 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
     }
     if (!user) {
       return res.redirect(`/?loginError=${info.message}`);
+    }
+    // verify false 면 cert 로 이동
+    if (!user.verify) {
+      return res.redirect("/cert");
     }
     return req.login(user, (loginError) => {
       if (loginError) {
