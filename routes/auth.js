@@ -6,13 +6,9 @@ const User = require("../models/user");
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
+const msg = require("dialog"); 
 var appDir = path.dirname(require.main.filename);
 const router = express.Router();
-
-var generateRandom = function (min, max) {
-  var ranNum = Math.floor(Math.random() * (max - min + 1)) + min;
-  return ranNum;
-};
 
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   const { email, name, nickid, password } = req.body;
@@ -27,7 +23,7 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     if (exUser2) {
       return res.redirect("/join?error=exist");
     }
-
+    //https://bb-library.tistory.com/106 코드 참고
     let emailTemplete;
     ejs.renderFile(
       appDir + "/template/authMail.ejs",
@@ -52,20 +48,21 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
     });
 
     let mailOptions = await transporter.sendMail({
-      from: `SSUSTAGRAM`,
+      from: "SSUSTAGRAM",
       to: req.body.email,
       subject: "회원가입을 위한 인증번호를 입력해주세요.",
       html: emailTemplete,
     });
+    transporter.close();
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      }
-      console.log("Finish sending email : " + info.response);
-      res.send(verifystring);
-      transporter.close();
-    });
+    // transporter.sendMail(mailOptions, function (error, info) {
+    //   if (error) {
+    //     console.log(error);
+    //   }
+    //   console.log("Finish sending email : " + info.response);
+    //   res.send(verifystring);
+    //   transporter.close();
+    // });
 
     const hash = await bcrypt.hash(password, 12);
     await User.create({
@@ -74,6 +71,7 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
       nickid,
       password: hash,
       verifystring,
+      verifytime: new Date(),
     });
     return res.redirect("/cert");
   } catch (error) {
@@ -84,10 +82,50 @@ router.post("/join", isNotLoggedIn, async (req, res, next) => {
 
 router.post("/cert", isNotLoggedIn, (req, res, next) => {
   const emailcert = req.body.emailcert;
+  const now = new Date();
   try {
     User.findOne({ where: { verifystring: emailcert } }).then((user) => {
       if (user) {
-        user.update({ verify: true });
+        if (now.getTime() - user.verifytime.getTime() <= 3 * 60 * 1000)
+          user.update({ verify: true });
+        else {
+          const newverifystring = Math.random().toString(36).slice(2);
+          user.update({ verifystring: newverifystring });
+          user.update({ verifytime: now });
+          console.log(`user.verifystring: ${user.verifystring}`);
+          console.log(`newverifystring: ${newverifystring}`);
+          let emailTemplete;
+          ejs.renderFile(
+            appDir + "/template/authMail.ejs",
+            { authCode: newverifystring },
+            function (err, data) {
+              if (err) {
+                console.log(err);
+              }
+              emailTemplete = data;
+            }
+          );
+
+          let transporter = nodemailer.createTransport({
+            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+              user: process.env.NODEMAILER_USER,
+              pass: process.env.NODEMAILER_PASS,
+            },
+          });
+
+          let mailOptions = transporter.sendMail({
+            from: "SSUSTAGRAM",
+            to: user.email,
+            subject: "회원가입을 위한 인증번호를 입력해주세요.",
+            html: emailTemplete,
+          });
+          transporter.close();
+          msg.info("인증번호 재전송 됨");
+        }
       }
     });
     return res.redirect("/");

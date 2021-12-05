@@ -30,6 +30,9 @@ module.exports = class User extends Sequelize.Model {
         },
         verifystring:{
           type: Sequelize.STRING(100),
+        },
+        verifytime:{
+          type: Sequelize.DATE,
         }
       },
       {
