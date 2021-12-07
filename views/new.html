@@ -2,37 +2,101 @@
 {% block content %}
 {% if user %}
         <div>
-          <form id="twit-form" action="/post" method="post" enctype="multipart/form-data">
+          <form id="twit-form" action="/post" method="post" enctype="multipart/form-data" name="twit-form">
             <div class="input-group">
               <textarea id="twit" name="content" maxlength="140"></textarea>
             </div>
-            <div class="img-preview">
-              <img id="img-preview" src="" style="display: none;" width="250" alt="미리보기">
-              <input id="img-url" type="hidden" name="url">
-            </div>
+            <div class="img-preview"></div>
             <div>
               <label id="img-label" for="img">사진 업로드</label>
-              <input id="img" type="file" accept="image/*">
+              <input id="img" name="img" type="file" accept="image/*" multiple />
               <button id="twit-btn" type="submit" class="btn">업로드</button>
             </div>
           </form>
         </div>
       {% endif %}
+      <script type="text/javascript" src="jquery.js"></script> 
       <script>
         if (document.getElementById('img')) {
+          let uploadNum = 0;
+          let index = 0;
           document.getElementById('img').addEventListener('change', function(e) {
             const formData = new FormData();
-            console.log(this, this.files);
-            formData.append('img', this.files[0]);
-            axios.post('/post/img', formData)
-              .then((res) => {
-                document.getElementById('img-url').value = res.data.url;
-                document.getElementById('img-preview').src = res.data.url;
-                document.getElementById('img-preview').style.display = 'inline';
-              })
-              .catch((err) => {
-                console.error(err);
-              });
+            const length = this.files.length;
+            const max = 5;
+            switch (uploadNum){
+              case 0:
+                if ( length > max - uploadNum){
+                  alert("사진은 최대 5장까지만 가능합니다.");
+                  return;
+                }
+                uploadNum += length;
+                break;
+              case 1:
+                if ( length > max - uploadNum){
+                  alert("사진은 최대 5장까지만 가능합니다.");
+                  return;
+                }
+                uploadNum += length;
+                break;
+              case 2:
+                if ( length > max - uploadNum){
+                  alert("사진은 최대 5장까지만 가능합니다.");
+                  return;
+                }
+                uploadNum += length;
+                break;
+              case 3:
+                if ( length > max - uploadNum){
+                  alert("사진은 최대 5장까지만 가능합니다.");
+                  return;
+                }
+                uploadNum += length;
+                break;
+              case 4:
+                if ( length > max - uploadNum){
+                  alert("사진은 최대 5장까지만 가능합니다.");
+                  return;
+                }
+                uploadNum += length;
+                break;
+              default:
+                alert("사진은 최대 5장까지만 가능합니다.");
+                return;
+            }
+            console.log("업로드한 사진: ", uploadNum);
+            console.log("현재 올린 사진: ", this.files);
+            for (let  i = 0 ; i < length ; i++){
+              formData.append('img', this.files[i]);
+              index++;
+            }
+            axios.post('/post/img', formData).then((res) => {
+              let url = JSON.parse(res.data);
+              console.log(url);
+              let img_html= "";
+              for(let i = 0 ; i < url.length ; i++){
+                console.log("미리보기", url[i]);
+                img_html += `<div class="img-preview${index}"> <img id="img-preview${index}" src="${url[i]}" width="250" alt="미리보기"> <input id="img-url" type="hidden" name="url" value="${url[i]}"> </div>`;
+                  console.log("json 길이: ", url.length);
+                  console.log("서버통신index:", index);
+                  console.log(img_html);
+              }
+              //console.log("변경 전: ", document.getElementsByClassName("img-preview").innerHTML);
+              $(".img-preview").append(img_html);
+              //document.getElementsByClassName("img-preview").append(img_html);
+              //console.log("변경 후: ", document.getElementsByClassName("img-preview").innerHTML);
+            });
+            // console.log(this, this.files);
+            // formData.append('img', this.files[0]);
+            // axios.post('/post/img', formData)
+            //   .then((res) => {
+            //     document.getElementById('img-url').value = res.data.url;
+            //     document.getElementById('img-preview').src = res.data.url;
+            //     document.getElementById('img-preview').style.display = 'inline';
+            //   })
+            //   .catch((err) => {
+            //     console.error(err);
+            //   });
           });
         }
       </script>

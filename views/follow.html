@@ -4,14 +4,11 @@
   <div class="timeline">
     
     <div class="followings half">
-      <h2>팔로잉 목록</h2>
-      
+      <h2>팔로잉 목록</h2>     
     </div>
   </div>
-    {% if twit.User.id != user.id %}
-    <div class="timeline">
-      <span>{{user.nickid}}</dspan>
+    <div class="timeline"> 
+      <span>{{user.nickid}}</span>
       <span><button id="follow" type="submit" class="btn"> 팔로우 </button></span>             
     </div>
-    {% endif %}
 {% endblock %}
