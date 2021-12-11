@@ -75,30 +75,33 @@ router.get("/search", async (req, res, next) => {
   try {
     let posts = [];
     if (option == "hashtag") {
-      const hashtag = await Hashtag.findOne({
-        where: { title: { [Op.like]: "%" + query + "%" } },
+      const hashtag = await Post.findAll({
+        include: [
+          {
+            model: Hashtag,
+            where: {
+              title: { [Op.like]: "%" + query + "%" },
+            },
+          },
+          { model: User,},
+        ],
       });
 
-      if (hashtag) {
-        posts = await hashtag.getPosts({ include: [{ model: User }] });
-      }
+      if (hashtag) posts = await hashtag;
     } else if (option == "writer") {
-      const writer = await User.findOne({
-        where: { nickid: { [Op.like]: "%" + query + "%" } },
-        //include: { model: Post },
+      const writer = await Post.findAll({
+        include: {
+          model: User,
+          where: {
+            nickid: { [Op.like]: "%" + query + "%" },
+          },
+        },
       });
 
-      // for (let i = 0; i < writer.length; i++) {
-      //   writer[i] = await writer[i].getPosts({ include: [{ model: User }] });
-      //   //console.log("posts:", posts);
-      // }
-      //posts = await writer;
       if (writer) {
-        posts = await writer.getPosts({ include: [{ model: User }] });
+        posts = await writer;
       }
-      console.log("posts:", posts);
     } else if (option == "text") {
-      // 해결
       const text = await Post.findAll({
         where: { content: { [Op.like]: "%" + query + "%" } },
         include: { model: User },
@@ -152,6 +155,7 @@ router.get("/hashtag", async (req, res, next) => {
     let posts = [];
     if (hashtag) {
       posts = await hashtag.getPosts({ include: [{ model: User }] });
+      console.log(posts);
     }
 
     return res.render("main", {

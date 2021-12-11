@@ -60,7 +60,6 @@ router.post(
         content: req.body.content,
         img: req.body.url.toString(),
         UserId: req.user.id,
-        createdAt: req.user.createdAt,
         index: req.body.url.toString().split(",").length,
       });
 

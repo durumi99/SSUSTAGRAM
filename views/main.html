@@ -59,8 +59,8 @@
               </div>
             {% endif %}
             
-            <a class="twit-author" href=writersearch?search={{twit.User.nickid}} value="text" class="btn">{{twit.User.nickid}}</a>
-            <div class="twit-date" id="twit-date" >{{twit.createdAt.toString().substring(0,10)}}</div>            
+            <a class="twit-author" href=writersearch?search={{twit.User.nickid}} class="btn">{{twit.User.nickid}}</a>
+            <div class="twit-date" id="twit-date" >{{twit.createdAt.toString().substring(0,10)}}</div>          
             <div class="twit-content">{{twit.content}}</div> 
             {% if twit.User.id == user.id %}
               <a id="logout" href="/edit" class="btn">편집</a>   
