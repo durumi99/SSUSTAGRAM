@@ -65,7 +65,7 @@
             <br>
             <div class="twit-date" id="twit-date" >{{twit.createdAt.toString().substring(0,10)}}</div>          
             <div  class="twit-content">{{twit.content}}</div>
-            {{twit.content.match((#[^\s#]*g)}}
+            <!-- {{twit.content.match((#[^\s#]*g)}} -->
             <br>
             {% if twit.User.id == user.id %}
             <!-- <form id="hashtag-form" action="/post/{{twit.id}}/edit" method="get"> 
