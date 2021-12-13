@@ -23,6 +23,8 @@
             <input type="hidden" value="{{twit.id}}" class="twit-id">
             <input type="hidden" value="{{twit.img}}" class="imgindex">
             <input type="hidden" value="{{twit.index}}" class="imgCnt">
+            <input type="hidden" value="{{twit.content}}" class="content">
+            
             {% if twit.img %}
               <div style="display:block" id = "img1_{{twit.id}}" class="twit-img{{twit.id}}">
                 <img src="{{twit.img.toString().split(',')[0]}}" class="imgstyle" alt="섬네일"></div>
@@ -60,10 +62,18 @@
             {% endif %}
             
             <a class="twit-author" href=writersearch?search={{twit.User.nickid}} class="btn">{{twit.User.nickid}}</a>
+            <br>
             <div class="twit-date" id="twit-date" >{{twit.createdAt.toString().substring(0,10)}}</div>          
-            <div class="twit-content">{{twit.content}}</div> 
+            <div  class="twit-content">{{twit.content}}</div>
+            {{twit.content.match((#[^\s#]*g)}}
+            <br>
             {% if twit.User.id == user.id %}
-              <a id="logout" href="/edit" class="btn">편집</a>   
+            <!-- <form id="hashtag-form" action="/post/{{twit.id}}/edit" method="get"> 
+              <input type="hidden" value={{twit}}>
+              <button class="edit" type="submit">편집</button>
+            </form>    -->
+            <!-- <button class="twit-edit">편집</button> -->
+            <button class="twit-delete">삭제</button>                 
             {% endif %}           
           </div>
         <!--{% endfor %}-->
@@ -76,6 +86,9 @@
 
 <script type="text/javascript" src="jquery.js"></script> 
   <script>
+    // const hashtag = document.querySelector('.content').value.match(/#[^\s#]*/g).toString();
+    // console.log(hashtag);
+    // console.log(typeof(hashtag));    
     document.querySelectorAll('.button1').forEach(function(tag) {
       tag.addEventListener('click', function() {    
         $(tag.name).css("display","none");
@@ -122,23 +135,68 @@
         });
     });
   }
-    document.querySelectorAll('.twit-edit').forEach(function(tag) {
-      tag.addEventListener('click', function() {
-        const myId = document.querySelector('#my-id');
-        if (myId) {
-          const userId = tag.parentNode.querySelector('.twit-user-id').value;
-          if (userId !== myId.value) {
-            if (confirm('팔로잉하시겠습니까?')) {
-              axios.post(`/user/${userId}/follow`)
-                .then(() => {
-                  location.reload();
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
+    // document.querySelectorAll('.twit-edit').forEach(function(tag) {
+    //   tag.addEventListener('click', function() {
+    //     const myId = document.querySelector('#my-id');
+    //     if (myId) {
+    //       const userId = tag.parentNode.querySelector('.twit-user-id').value;
+    //       if (userId !== myId.value) {
+    //         if (confirm('팔로잉하시겠습니까?')) {
+    //           axios.post(`/user/${userId}/follow`)
+    //             .then(() => {
+    //               location.reload();
+    //             })
+    //             .catch((err) => {
+    //               console.error(err);
+    //             });
+    //         }
+    //       }
+          
+    //     }
+    //   });
+    // });
+    document.querySelectorAll('.twit-edit').forEach(function (tag) {
+    tag.addEventListener('click', function () {
+      const myId = document.querySelector('#my-id');
+      console.log(myId);
+      if (myId) {
+        const userId = tag.parentNode.querySelector('.twit-user-id').value;
+        const twitId = tag.parentNode.querySelector('.twit-id').value;
+        console.log(userId);
+        console.log(twitId);
+        if (userId === myId.value) {    
+          axios.get(`/${twitId}/edit`)
+            .then(() => {
+              location.reload();
+            })
+            .catch((err) => {
+              console.error(err.response.data);
+            });
+          }          
+        }
+      });
+    });
+
+    document.querySelectorAll('.twit-delete').forEach(function (tag) {
+    tag.addEventListener('click', function () {
+      const myId = document.querySelector('#my-id');
+      console.log(myId);
+      if (myId) {
+        const userId = tag.parentNode.querySelector('.twit-user-id').value;
+        const twitId = tag.parentNode.querySelector('.twit-id').value;
+        console.log(userId);
+        console.log(twitId);
+        if (userId === myId.value) {
+          if (confirm('삭제하시겠습니까?')) {
+            axios.delete(`/post/${twitId}`)
+              .then(() => {
+                location.reload();
+              })
+              .catch((err) => {
+                console.error(err);
+              });
             }
           }
-          
         }
       });
     });

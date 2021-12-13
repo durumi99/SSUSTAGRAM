@@ -184,3 +184,11 @@ footer {
   height: 150px;
   object-fit: cover;
 }
+.follow {
+  background-color: white;
+  color: black;
+}
+.unfollow {
+  background-color: skyblue;
+  color: white;
+}

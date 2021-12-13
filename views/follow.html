@@ -1,14 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  <div class="timeline">
-    
+  <div class="timeline">    
     <div class="followings half">
       <h2>팔로잉 목록</h2>     
+      {% for twit in twits%}
+        {{twit}}
+      {% endfor %}
     </div>
   </div>
-    <div class="timeline"> 
-      <span>{{user.nickid}}</span>
-      <span><button id="follow" type="submit" class="btn"> 팔로우 </button></span>             
-    </div>
 {% endblock %}

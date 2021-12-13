@@ -1,6 +1,61 @@
-{% extends 'follow.html' %}
+{% extends 'layout.html' %}
 
-<div class="timeline"> 
-    <span>{{user.nickid}}</span>
-    <span><button id="follow" type="submit" class="btn"> 팔로우 </button></span>             
-</div>
+{% block content %}
+    {% for twit in twits%}
+        {% if twit.id != user.id%}
+        <div>
+            <input type="hidden" value="{{twit.id}}" class="twit-user-id">
+            {{twit.nickid}} 
+            {% if not followerIdList.includes(twit.id) and twit.id !== user.id %}
+                <button class="follow">팔로우</button>
+            {% else %}
+                <button class="unfollow">팔로잉</button>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+<!-- 참조 코드 : https://youthangcode.tistory.com/entry/Nodejs-%ED%8C%94%EB%A1%9C%EC%9A%B0%ED%95%98%EA%B8%B0-%ED%8C%94%EB%A1%9C%EC%9E%89%EB%81%8A%EA%B8%B0-%EA%B5%AC%ED%98%84 -->
+{% block script %}
+<script>
+    document.querySelectorAll('.follow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const myId = document.querySelector('#my-id');
+            if (myId) {
+                const userId = tag.parentNode.querySelector('.twit-user-id').value;
+                if (userId !== myId.value) {
+                    if (confirm('팔로잉하시겠습니까?')) {
+                        axios.post(`/user/${userId}/follow`)
+                        .then(() => {
+                        location.reload();
+                        })
+                        .catch((err) => {
+                        console.error(err);
+                        });
+                    }
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.unfollow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const myId = document.querySelector('#my-id');
+            if (myId) {
+                const userId = tag.parentNode.querySelector('.twit-user-id').value;
+                if (userId !== myId.value) {
+                    if (confirm('언팔로잉하시겠습니까?')) {
+                        axios.post(`/user/${userId}/unfollow`)
+                        .then(() => {
+                        location.reload();
+                        })
+                        .catch((err) => {
+                        console.error(err);
+                        });
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

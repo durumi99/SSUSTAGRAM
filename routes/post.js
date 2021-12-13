@@ -86,5 +86,45 @@ router.post(
   }
 );
 
-router.get("/:id/delete", function (req, res, next) {});
+// router.get("/:id/edit", isLoggedIn, async (req, res, next) => {
+//   const query = req.params.id;
+//   if (!query) {
+//     return res.redirect("/");
+//   }
+//   try {
+//     const post = await Post.findOne({ where: { id: query } });
+//     //console.log("post:", post);
+//     console.log("edit으로 이동");
+//     console.log(__dirname);
+//     res.render("/edit", {
+//       title: "게시물 편집",
+//       post,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
+
+// router.put("/:id", isLoggedIn, function (req, res) {
+//   req.body.post.upDatedAt = Date.now();
+//   Post.findById(req.params.id, function (err, post) {
+//     if (err) return res.json({ success: false, message: err });
+//     Post.findByIdAndUpdate(req.param.id, req.body.post, function (err, post) {
+//       if (err) return res.json({ success: false, message: err });
+//       res.redirect("/");
+//     });
+//   });
+// });
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    await Post.destroy({ where: { id: req.params.id, userId: req.user.id } });
+    res.send("OK");
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

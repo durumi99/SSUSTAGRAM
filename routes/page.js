@@ -19,20 +19,20 @@ router.use((req, res, next) => {
 });
 
 router.get("/profile", isLoggedIn, (req, res) => {
-  res.render("profile", { title: "내 정보 - NodeBird" });
+  res.render("profile", { title: "내 정보 - SSUSTAGRAM" });
 });
 
 router.get("/join", isNotLoggedIn, (req, res) => {
-  res.render("join", { title: "회원가입 - NodeBird" });
+  res.render("join", { title: "회원가입 - SSUSTAGRAM" });
 });
 
 router.get("/new", isLoggedIn, (req, res) => {
   res.render("new", { title: "게시물 작성" });
 });
 
-router.get("/follow", isLoggedIn, async (req, res, next) => {
-  res.render("follow", { title: "팔로우" });
-});
+// router.get("/follow", isLoggedIn, async (req, res, next) => {
+//   res.render("follow", { title: "팔로우" });
+// });
 
 router.get("/msg", isLoggedIn, (req, res) => {
   res.render("message", { title: "Direct Message" });
@@ -65,6 +65,21 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/follow", async (req, res, next) => {
+  try {
+    const users = await User.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+    res.render("user", {
+      title: "follow",
+      twits: users,
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 router.get("/search", async (req, res, next) => {
   const query = req.query.search;
   const option = req.query.option;
@@ -83,7 +98,7 @@ router.get("/search", async (req, res, next) => {
               title: { [Op.like]: "%" + query + "%" },
             },
           },
-          { model: User,},
+          { model: User },
         ],
       });
 
@@ -159,7 +174,7 @@ router.get("/hashtag", async (req, res, next) => {
     }
 
     return res.render("main", {
-      title: `${query} | NodeBird`,
+      title: `${query} | SSUSTAGRAM,`,
       twits: posts,
     });
   } catch (error) {
@@ -167,5 +182,23 @@ router.get("/hashtag", async (req, res, next) => {
     return next(error);
   }
 });
+
+// router.get("/:id/edit", isLoggedIn, async (req, res, next) => {
+//   const query = req.params.id;
+//   if (!query) {
+//     return res.redirect("/");
+//   }
+//   try {
+//     const post = await Post.findOne({ where: { id: query } });
+//     //console.log("post:", post);
+//     return res.render("edit", {
+//       title: "게시물 편집",
+//       twits: post,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
 
 module.exports = router;
