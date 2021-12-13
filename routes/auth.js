@@ -92,8 +92,6 @@ router.post("/cert", isNotLoggedIn, (req, res, next) => {
           const newverifystring = Math.random().toString(36).slice(2);
           user.update({ verifystring: newverifystring });
           user.update({ verifytime: now });
-          console.log(`user.verifystring: ${user.verifystring}`);
-          console.log(`newverifystring: ${newverifystring}`);
           let emailTemplete;
           ejs.renderFile(
             appDir + "/template/authMail.ejs",
@@ -146,7 +144,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
     // verify false 면 cert 로 이동
     if (!user.verify) {
       return res.redirect("/cert");
-    }
+    } 
     return req.login(user, (loginError) => {
       if (loginError) {
         console.error(loginError);
