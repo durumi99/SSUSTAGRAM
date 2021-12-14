@@ -53,31 +53,30 @@ router.post(
     console.log(req.body.content);
     console.log(req.body.url);
     try {
-      //if (req.body.url) {
-      //console.log(req.user);
+      if (req.body.url) {
+        console.log(req.user);
 
-      const post = await Post.create({
-        content: req.body.content,
-        img: req.body.url.toString(),
-        UserId: req.user.id,
-        index: req.body.url.toString().split(",").length,
-      });
+        const post = await Post.create({
+          content: req.body.content,
+          img: req.body.url.toString(),
+          UserId: req.user.id,
+          index: req.body.url.toString().split(",").length,
+        });
 
-      const hashtags = req.body.content.match(/#[^\s#]*/g);
-      if (hashtags) {
-        const result = await Promise.all(
-          hashtags.map((tag) => {
-            return Hashtag.findOrCreate({
-              where: { title: tag.slice(1).toLowerCase() },
-            });
-          })
-        );
-        await post.addHashtags(result.map((r) => r[0]));
+        const hashtags = req.body.content.match(/#[^\s#]*/g);
+        if (hashtags) {
+          const result = await Promise.all(
+            hashtags.map((tag) => {
+              return Hashtag.findOrCreate({
+                where: { title: tag.slice(1).toLowerCase() },
+              });
+            })
+          );
+          await post.addHashtags(result.map((r) => r[0]));
+        }
+      } else {
+        msg.info("이미지 없어 업로드 실패");
       }
-
-      //} else {
-      //  msg.info("이미지 없어 업로드 실패");
-      //}
       res.redirect("/");
     } catch (error) {
       console.error(error);
