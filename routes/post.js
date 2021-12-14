@@ -53,7 +53,7 @@ router.post(
     console.log(req.body.content);
     console.log(req.body.url);
     try {
-      if (req.body.url) {
+      if (req.body.url != undefined) {
         console.log(req.user);
 
         const post = await Post.create({
