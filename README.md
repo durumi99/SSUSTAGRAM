@@ -8,5 +8,3 @@ Back-End : MySql, NodeJS, ExpressJs, Sequelize
 Front-End : HTML, CSS, JavaScript, nunjucks, jQuery
 
 Tool : Git
-
-배포 : Putty
