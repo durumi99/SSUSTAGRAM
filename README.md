@@ -3,11 +3,9 @@
 
 사용한 기술스택은 다음과 같습니다.
 
-Back-End : MySql, NodeJS, ExpressJs, Sequelize
+Back-End : MySql, NodeJS, Express, Sequelize
 
-Front-End : HTML, CSS, JavaScript, nunjucks, jQuery
-
-Tool : Git
+Front-End : HTML, CSS, JavaScript
 
 
 구현 내용은 다음과 같습니다
