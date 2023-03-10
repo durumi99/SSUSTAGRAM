@@ -22,6 +22,6 @@ Front-End : HTML, CSS, JavaScript
 
 업로드 (/new) 
 
-편집 (/edit)  
+삭제 (/edit)  
 
 팔로우 목록(/follow)
