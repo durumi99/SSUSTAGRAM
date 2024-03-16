@@ -7,6 +7,8 @@ Back-End : MySql, NodeJS, Express, Sequelize
 
 Front-End : HTML, CSS, JavaScript
 
+### Demo-Video
+[![Video Label](http://img.youtube.com/vi/5c7VkSnKC-c/0.jpg)]([https://youtu.be/5c7VkSnKC-c?si=mG4v_7-Z0gTNE3lV]))
 
 구현 내용은 다음과 같습니다
 
@@ -25,3 +27,4 @@ Front-End : HTML, CSS, JavaScript
 삭제 (/edit)  
 
 팔로우 목록(/follow)
+
